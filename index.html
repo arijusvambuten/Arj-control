@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARJ CONTROL</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Arial,Helvetica,sans-serif;
+  color:white;
+
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      #263866 0%,
+      #10172b 35%,
+      #050711 75%
+    );
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  background:#315cff;
+  filter:blur(130px);
+  opacity:.15;
+  animation:pulse 4s infinite ease-in-out;
+}
+
+@keyframes pulse{
+  0%,100%{
+    transform:scale(.8);
+    opacity:.10;
+  }
+
+  50%{
+    transform:scale(1.2);
+    opacity:.22;
+  }
+}
+
+.panel{
+  position:relative;
+  width:min(92vw,430px);
+  padding:32px 25px;
+  text-align:center;
+
+  border-radius:32px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff12,
+      #ffffff04
+    );
+
+  border:1px solid #ffffff18;
+
+  backdrop-filter:blur(20px);
+
+  box-shadow:
+    0 30px 80px #000b,
+    inset 0 1px 1px #ffffff18;
+}
+
+.logo{
+  font-size:14px;
+  letter-spacing:5px;
+  color:#9bb2ff;
+  margin-bottom:8px;
+}
+
+h1{
+  margin:0;
+  font-size:32px;
+  letter-spacing:3px;
+  font-weight:700;
+}
+
+.status{
+  margin-top:10px;
+  font-size:13px;
+  color:#70ff9a;
+  letter-spacing:2px;
+}
+
+.button-area{
+  margin:35px auto;
+  width:270px;
+  height:270px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  position:relative;
+}
+
+.ring{
+  position:absolute;
+
+  width:270px;
+  height:270px;
+
+  border-radius:50%;
+
+  border:1px solid #5275ff44;
+
+  animation:rotate 12s linear infinite;
+}
+
+.ring::before{
+  content:"";
+
+  position:absolute;
+
+  width:8px;
+  height:8px;
+
+  background:#6585ff;
+
+  border-radius:50%;
+
+  top:18px;
+  left:50%;
+
+  box-shadow:
+    0 0 15px #6585ff;
+}
+
+.ring2{
+  width:235px;
+  height:235px;
+
+  border:1px dashed #ffffff18;
+
+  animation:rotateReverse 8s linear infinite;
+}
+
+@keyframes rotate{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+@keyframes rotateReverse{
+  to{
+    transform:rotate(-360deg);
+  }
+}
+
+button{
+  position:relative;
+
+  width:190px;
+  height:190px;
+
+  border-radius:50%;
+  border:0;
+
+  cursor:pointer;
+
+  color:white;
+
+  font-size:22px;
+  font-weight:bold;
+  letter-spacing:3px;
+
+  background:
+    radial-gradient(
+      circle at 35% 25%,
+      #7796ff,
+      #3154d8 40%,
+      #14256f 75%,
+      #0b133c
+    );
+
+  box-shadow:
+    inset 0 8px 15px #ffffff35,
+    inset 0 -18px 25px #0008,
+    0 15px 35px #000c,
+    0 0 35px #355dff66;
+
+  transition:
+    transform .12s,
+    box-shadow .12s;
+}
+
+button::before{
+  content:"";
+
+  position:absolute;
+
+  inset:12px;
+
+  border-radius:50%;
+
+  border:1px solid #ffffff25;
+}
+
+button:hover{
+  box-shadow:
+    inset 0 8px 15px #ffffff45,
+    inset 0 -18px 25px #0008,
+    0 18px 40px #000c,
+    0 0 65px #4770ff;
+}
+
+button:active{
+  transform:scale(.86);
+
+  box-shadow:
+    inset 0 15px 30px #000b,
+    0 5px 15px #000,
+    0 0 80px #5275ff;
+}
+
+.success{
+  animation:success .65s ease;
+}
+
+@keyframes success{
+  0%{
+    transform:scale(.86);
+  }
+
+  40%{
+    transform:scale(1.08);
+  }
+
+  70%{
+    transform:scale(.96);
+  }
+
+  100%{
+    transform:scale(1);
+  }
+}
+
+.command{
+  margin-top:5px;
+
+  font-size:12px;
+
+  color:#ffffff55;
+
+  letter-spacing:2px;
+}
+
+.footer{
+  margin-top:25px;
+
+  font-size:11px;
+
+  color:#ffffff45;
+
+  letter-spacing:1px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+
+  <div class="logo">
+    ESP8266 CONTROL SYSTEM
+  </div>
+
+  <h1>ARJ CONTROL</h1>
+
+  <div class="status" id="status">
+    ● CHECKING CONNECTION
+  </div>
+
+  <div class="button-area">
+
+    <div class="ring"></div>
+
+    <div class="ring ring2"></div>
+
+    <button id="mainButton" onclick="activate()">
+      DO ALL
+    </button>
+
+  </div>
+
+  <div class="command" id="command">
+    CHECKING ESP8266...
+  </div>
+
+  <div class="footer">
+    Made by Arijus Vambutas — 12 Metu
+  </div>
+
+</div>
+
+<script>
+
+/*
+====================================================
+ARJ CONTROL
+====================================================
+
+LOCAL ESP8266:
+http://192.168.4.1
+
+ONLINE:
+The website itself works from anywhere.
+
+When connected to ESP-CONTROL:
+DO ALL -> controls ESP8266.
+
+When NOT connected:
+DO ALL -> animation only.
+====================================================
+*/
+
+const ESP_IP = "http://192.168.4.1";
+
+let espConnected = false;
+
+
+/* Check if ESP8266 is reachable */
+function checkESP(){
+
+  const status =
+    document.getElementById("status");
+
+  const command =
+    document.getElementById("command");
+
+  const testURL =
+    ESP_IP + "/?t=" + Date.now();
+
+  fetch(testURL, {
+    method:"GET",
+    mode:"no-cors",
+    cache:"no-store"
+  })
+
+  .then(function(){
+
+    espConnected = true;
+
+    status.innerHTML =
+      "● ESP CONNECTED";
+
+    status.style.color =
+      "#70ff9a";
+
+    command.innerHTML =
+      "LOCAL CONTROL READY";
+
+  })
+
+  .catch(function(){
+
+    espConnected = false;
+
+    status.innerHTML =
+      "● ONLINE MODE";
+
+    status.style.color =
+      "#9bb2ff";
+
+    command.innerHTML =
+      "REMOTE VIEW MODE";
+
+  });
+}
+
+
+/* Button */
+function activate(){
+
+  const button =
+    document.getElementById("mainButton");
+
+  const status =
+    document.getElementById("status");
+
+  const command =
+    document.getElementById("command");
+
+
+  /* Button animation */
+  button.classList.remove("success");
+
+  void button.offsetWidth;
+
+  button.classList.add("success");
+
+
+  /* LOCAL ESP MODE */
+  if(espConnected){
+
+    status.innerHTML =
+      "● COMMAND ACTIVE";
+
+    status.style.color =
+      "#ffffff";
+
+    command.innerHTML =
+      "EXECUTING ALL SYSTEMS...";
+
+
+    fetch(
+      ESP_IP +
+      "/doall?t=" +
+      Date.now(),
+      {
+        method:"GET",
+        mode:"no-cors",
+        cache:"no-store"
+      }
+    )
+
+    .then(function(){
+
+      command.innerHTML =
+        "COMMAND SENT ✓";
+
+      status.innerHTML =
+        "● SYSTEM ACTIVE";
+
+      status.style.color =
+        "#70ff9a";
+
+    })
+
+    .catch(function(){
+
+      command.innerHTML =
+        "CONNECTION ERROR";
+
+      status.innerHTML =
+        "● CONNECTION LOST";
+
+      status.style.color =
+        "#ff7070";
+
+      espConnected = false;
+
+    });
+
+  }
+
+
+  /* ONLINE MODE */
+  else{
+
+    status.innerHTML =
+      "● ONLINE MODE";
+
+    status.style.color =
+      "#9bb2ff";
+
+    command.innerHTML =
+      "ESP NOT CONNECTED";
+
+  }
+
+
+  /* Return to normal */
+  setTimeout(function(){
+
+    if(espConnected){
+
+      command.innerHTML =
+        "LOCAL CONTROL READY";
+
+      status.innerHTML =
+        "● ESP CONNECTED";
+
+      status.style.color =
+        "#70ff9a";
+
+    }
+
+    else{
+
+      command.innerHTML =
+        "REMOTE VIEW MODE";
+
+      status.innerHTML =
+        "● ONLINE MODE";
+
+      status.style.color =
+        "#9bb2ff";
+
+    }
+
+  },1500);
+
+}
+
+
+/* Check connection every 5 seconds */
+
+checkESP();
+
+setInterval(
+  checkESP,
+  5000
+);
+
+</script>
+
+</body>
+</html>
